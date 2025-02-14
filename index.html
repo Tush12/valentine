@@ -40,14 +40,14 @@
         .flap {
             border-left: 180px solid transparent;
             border-right: 180px solid transparent;
-            border-bottom: 105px solid transparent;
-            border-top: 130px solid #d9534f;
+            border-bottom: 120px solid transparent; /* Increased height */
+            border-top: 150px solid #d9534f; /* Increased top height */
             transform-origin: top;
             pointer-events: none;
         }
 
         .pocket {
-            border-left: 180px solid #f5a3a2; /* Soft pinkish red for the pocket */
+            border-left: 180px solid #f5a3a2; /* Soft pinkish red */
             border-right: 180px solid #f5a3a2;
             border-bottom: 120px solid #ff6f61; /* Lighter romantic red */
             border-top: 120px solid transparent;
@@ -65,6 +65,9 @@
             top: 5%;
             border-radius: 8px;
             box-shadow: 0 2px 26px rgba(0, 0, 0, 0.12);
+            z-index: 2;
+            transform: translateY(0px);
+            transition: transform 0.4s ease;
         }
 
         .words {
@@ -107,38 +110,14 @@
             z-index: 5;
         }
 
-        .close .letter {
-            transform: translateY(0px);
-            transition: transform 0.4s ease, z-index 1s;
-            z-index: 1;
-        }
-
         .open .letter {
             transform: translateY(-110px);
             transition: transform 0.4s 0.6s ease, z-index 0.6s;
             z-index: 2;
         }
 
-        .reset {
-            text-align: center;
-            margin-top: 20px;
-        }
-
-        .reset button {
-            font-weight: bold;
-            background-color: transparent;
-            border: solid 2px #d9534f;
-            border-radius: 6px;
-            color: #d9534f;
-            font-size: 1rem;
-            text-transform: uppercase;
-            padding: 12px 20px;
-            cursor: pointer;
-        }
-
-        .reset button:hover {
-            background-color: #d9534f;
-            color: #fff;
+        .close .letter {
+            transform: translateY(0px);
         }
 
         .hearts {
@@ -147,6 +126,11 @@
             left: 0;
             right: 0;
             z-index: 2;
+            display: none; /* Hidden by default */
+        }
+
+        .open .hearts {
+            display: block; /* Show hearts only when opened */
         }
 
         .heart {
@@ -177,6 +161,73 @@
             transform-origin: 100% 100%;
         }
 
+        .a1 {
+            left: 20%;
+            transform: scale(0.7);
+            opacity: 1;
+            animation: slideUp 4s linear 1, sideSway 2s ease-in-out 4 alternate;
+            animation-fill-mode: forwards;
+            animation-delay: 0.7s;
+        }
+
+        .a2 {
+            left: 55%;
+            transform: scale(1);
+            opacity: 1;
+            animation: slideUp 5s linear 1, sideSway 4s ease-in-out 2 alternate;
+            animation-fill-mode: forwards;
+            animation-delay: 0.7s;
+        }
+
+        .a3 {
+            left: 10%;
+            transform: scale(0.8);
+            opacity: 1;
+            animation: slideUp 7s linear 1, sideSway 2s ease-in-out 6 alternate;
+            animation-fill-mode: forwards;
+            animation-delay: 0.7s;
+        }
+
+        @keyframes slideUp {
+            0% {
+                top: 0;
+            }
+            100% {
+                top: -600px;
+            }
+        }
+
+        @keyframes sideSway {
+            0% {
+                margin-left: 0px;
+            }
+            100% {
+                margin-left: 50px;
+            }
+        }
+
+        .reset {
+            text-align: center;
+            margin-top: 30px; /* Increased margin for space */
+        }
+
+        .reset button {
+            font-weight: bold;
+            background-color: transparent;
+            border: solid 2px #d9534f;
+            border-radius: 6px;
+            color: #d9534f;
+            font-size: 1rem;
+            text-transform: uppercase;
+            padding: 12px 20px;
+            cursor: pointer;
+        }
+
+        .reset button:hover {
+            background-color: #d9534f;
+            color: #fff;
+        }
+
         @media (max-width: 600px) {
             #envelope {
                 width: 300px;
@@ -186,7 +237,7 @@
             .flap {
                 border-left: 150px solid transparent;
                 border-right: 150px solid transparent;
-                border-top: 100px solid #d9534f;
+                border-top: 120px solid #d9534f; /* Adjusted for mobile */
             }
 
             .pocket {
@@ -198,6 +249,7 @@
             .letter {
                 width: 85%;
                 height: 85%;
+                top: 15%; /* Adjusted for better closure */
             }
 
             .words.line1 {
@@ -226,7 +278,11 @@
                 <div class="words line1">To: Sakshi</div>
                 <div class="words line2">Happy</div>
                 <div class="words line3">Valentine's Day</div>
-                
+            </div>
+            <div class="hearts">
+                <div class="heart a1"></div>
+                <div class="heart a2"></div>
+                <div class="heart a3"></div>
             </div>
         </div>
     </div>
@@ -242,22 +298,13 @@
             var btn_open = $("#open");
             var btn_reset = $("#reset");
 
-            envelope.click(function () {
-                open();
-            });
             btn_open.click(function () {
-                open();
-            });
-            btn_reset.click(function () {
-                close();
+                envelope.addClass("open").removeClass("close");
             });
 
-            function open() {
-                envelope.addClass("open").removeClass("close");
-            }
-            function close() {
+            btn_reset.click(function () {
                 envelope.addClass("close").removeClass("open");
-            }
+            });
         });
     </script>
 </body>
