@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Valentine Letter</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;600;700&display=swap" rel="stylesheet" />
+
+  <style>
+    :root{
+      --bg1:#f4e9f7;
+      --bg2:#fde7ef;
+      --panel: rgba(255,255,255,0.55);
+
+      --shadow: 0 18px 55px rgba(0,0,0,0.12);
+      --shadow2: 0 14px 30px rgba(0,0,0,0.12);
+
+      --redTop:#d1ccd0;
+      --redTopDark:#bfb3b8;
+      --redBot:#c9bfc4;
+      --pinkL:#c9bfc4;
+      --pinkR:#c9bfc4;
+
+      --btnText:#b34646;
+      --btnBorder: rgba(200, 90, 90, 0.38);
+      --btnFill: rgba(195, 65, 65, 0.18);
+    }
+
+    *{ box-sizing:border-box; }
+
+    body{
+      margin:0;
+      min-height:100vh;
+      display:grid;
+      place-items:center;
+      padding:22px;
+      font-family:"Dancing Script", cursive;
+      background:
+        radial-gradient(900px 520px at 20% 20%, rgba(255,255,255,0.75), transparent 60%),
+        radial-gradient(900px 520px at 80% 25%, rgba(255,255,255,0.55), transparent 60%),
+        linear-gradient(135deg, var(--bg1), var(--bg2));
+    }
+
+    .panel{
+      width: min(520px, 96vw);
+      border-radius: 30px;
+      background: var(--panel);
+      backdrop-filter: blur(10px);
+      box-shadow: var(--shadow);
+      padding: 22px 22px 18px;
+      display: grid;
+      gap: 14px;
+      justify-items: center;
+    }
+
+    h1{
+      margin: 2px 0 0;
+      font-size: 42px;
+      font-weight: 600;
+      color: rgba(35,35,35,0.80);
+      text-align: center;
+    }
+
+    .wrap{
+      width: 100%;
+      display: grid;
+      place-items: center;
+      padding: 6px 0 0;
+    }
+
+    /* ===== ENVELOPE ===== */
+    #envelope{
+      width: min(430px, 92vw);
+      height: 340px;
+      position: relative;
+      border-radius: 18px;
+      filter: drop-shadow(0 18px 30px rgba(0,0,0,0.12));
+      perspective: 1200px;
+      overflow: visible;
+    }
+
+    .back{
+      position:absolute;
+      inset:0;
+      border-radius:18px;
+      background: linear-gradient(180deg, #ddd0d5, var(--redBot));
+      z-index: 1;
+      overflow:hidden;
+    }
+
+    /* subtle inner pocket depth */
+    .back:after{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:
+        radial-gradient(280px 160px at 50% 78%, rgba(0,0,0,0.16), transparent 60%),
+        linear-gradient(180deg, rgba(0,0,0,0.06), transparent 45%);
+      opacity:0.35;
+      pointer-events:none;
+    }
+
+    /* LETTER */
+    .letter{
+      position:absolute;
+      left:50%;
+      bottom: 24px;
+      width: 86%;
+      height: 280px;
+      transform: translateX(-50%) translateY(0) scale(0.995);
+      transform-origin: center bottom;
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: var(--shadow2);
+      z-index: 2;
+      overflow:hidden;
+      transition: transform 700ms cubic-bezier(.16, 1, .3, 1);
+      will-change: transform;
+    }
+
+    .letter .inner{
+      height:100%;
+      padding: 16px 16px 18px;
+      position:relative;
+    }
+
+    .content{
+      opacity: 0;
+      transform: translateY(10px);
+      transition: opacity 260ms ease, transform 260ms ease;
+      transition-delay: 0ms;
+    }
+
+    .topline{
+      text-align:center;
+      font-size: 18px;
+      color: rgba(80,80,80,0.75);
+      padding-right: 5 px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .toLine{
+      text-align:center;
+      font-size: 38px;
+      font-weight: 700;
+      color:#222;
+      margin-top: 6px;
+    }
+
+    .rule{
+      width: 78%;
+      height: 1px;
+      background: rgba(0,0,0,0.12);
+      border-radius: 999px;
+      margin: 12px auto 10px;
+    }
+
+    .message{
+      padding: 6px 10px 2px;
+      text-align:center;
+      color: rgba(35,35,35,0.85);
+      font-size: 22px;
+      line-height: 1.45;
+    }
+
+    .typing {
+      display: inline-block;
+    }
+
+    .fav{
+      position:absolute;
+      right: 12px;
+      top: 12px;
+      width: 36px;
+      height: 36px;
+      border: 0;
+      border-radius: 999px;
+      background: #a855f7;
+      color: #fff;
+      box-shadow: 0 10px 18px rgba(0,0,0,0.14);
+      display:grid;
+      place-items:center;
+      cursor:pointer;
+      user-select:none;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      font-weight: 700;
+      z-index: 3;
+    }
+
+    /* FRONT pocket */
+    .front{
+      position:absolute;
+      inset:0;
+      border-radius:18px;
+      overflow:hidden;
+      z-index: 4;
+      pointer-events:none;
+    }
+
+    .front:before{
+      content:"";
+      position:absolute;
+      left:0;
+      bottom:0;
+      width:0;height:0;
+      border-left: 215px solid var(--pinkL);
+      border-top: 145px solid transparent;
+    }
+    .front:after{
+      content:"";
+      position:absolute;
+      right:0;
+      bottom:0;
+      width:0;height:0;
+      border-right: 215px solid var(--pinkR);
+      border-top: 145px solid transparent;
+    }
+
+    .front .bottom{
+      position:absolute;
+      left:0; right:0;
+      bottom:0;
+      height: 150px;
+      background: linear-gradient(180deg, #c9bfc4, var(--redBot));
+      clip-path: polygon(0 0, 50% 76%, 100% 0, 100% 100%, 0 100%);
+    }
+
+    /* ===== IMPROVED TRIANGLE FLAP (clip-path instead of border triangle) ===== */
+    .flap{
+      position:absolute;
+      left:50%;
+      top:0;
+      height: 205px;
+      width: 100%;
+      margin-left: -50%;
+
+      background: linear-gradient(to bottom, var(--redTop) 0%, var(--redTopDark) 100%);
+      clip-path: polygon(5% 0%, 95% 0%, 50% 85%, 5% 0%);
+      border-radius: 18px 18px 0 0;
+
+      transform-origin: top center;
+      transform: rotateX(0deg);
+      transition: transform 700ms cubic-bezier(.16, 1, .3, 1);
+
+      z-index: 6;
+      pointer-events:none;
+      backface-visibility:hidden;
+
+      box-shadow:
+        inset 0 -6px 10px rgba(255,255,255,0.15),
+        0 10px 14px rgba(0,0,0,0.18);
+    }
+
+    /* small crease line for paper feel */
+    .flap::after{
+      content:"";
+      position:absolute;
+      left:10%;
+      right:10%;
+      bottom:14px;
+      height:1px;
+      background: rgba(0,0,0,0.08);
+    }
+
+    /* ===== OPENING ===== */
+    #envelope.open .flap{
+      transform: rotateX(180deg);
+    }
+
+    #envelope.open .letter{
+      transform: translateX(-50%) translateY(-160px) scale(1);
+    }
+
+    #envelope.open .content{
+      opacity: 1;
+      transform: translateY(0);
+      transition-delay: 360ms;
+    }
+
+    /* optional bounce */
+    #envelope.open.bounce .letter{
+      animation: letterBounce 720ms cubic-bezier(.16, 1, .3, 1) 1;
+    }
+    @keyframes letterBounce{
+      0%   { transform: translateX(-50%) translateY(0) scale(0.995); }
+      70%  { transform: translateX(-50%) translateY(-164px) scale(1); }
+      85%  { transform: translateX(-50%) translateY(-154px) scale(1); }
+      100% { transform: translateX(-50%) translateY(-160px) scale(1); }
+    }
+
+    /* buttons */
+    .controls{
+      width: 100%;
+      display:flex;
+      justify-content:center;
+      gap: 14px;
+      margin-top: 2px;
+      flex-wrap: wrap;
+    }
+
+    .btn{
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      font-weight: 700;
+      letter-spacing: .2px;
+      border-radius: 14px;
+      padding: 14px 38px;
+      cursor:pointer;
+      border: 2px solid var(--btnBorder);
+      background: rgba(255,255,255,0.55);
+      color: var(--btnText);
+      box-shadow: 0 10px 18px rgba(0,0,0,0.08);
+    }
+    .btn.primary{
+      background: var(--btnFill);
+      border-color: var(--btnFill);
+      color: rgba(125,35,35,0.95);
+    }
+
+    .musicRow{
+      display:flex;
+      justify-content:center;
+      margin-top: -4px;
+    }
+
+    .tip{
+      margin-top: -2px;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      text-align:center;
+      font-size: 13px;
+      color: rgba(45,45,45,0.55);
+    }
+
+    .floating-heart {
+      position: fixed;
+      pointer-events: none;
+      font-size: 24px;
+      animation: float-up 2s ease-out forwards;
+      z-index: 1000;
+    }
+
+    @keyframes float-up {
+      0% {
+        opacity: 1;
+        transform: translateY(0) translateX(0);
+      }
+      100% {
+        opacity: 0;
+        transform: translateY(-100px) translateX(var(--tx));
+      }
+    }
+
+    .opening-heart {
+      position: fixed;
+      pointer-events: none;
+      font-size: 60px;
+      color: #e8b4e8;
+      animation: float-up-large 3s ease-out forwards;
+      z-index: 1000;
+    }
+
+    @keyframes float-up-large {
+      0% {
+        opacity: 1;
+        transform: translateY(0) translateX(0) scale(0.5);
+      }
+      100% {
+        opacity: 0;
+        transform: translateY(-200px) translateX(var(--tx)) scale(1);
+      }
+    }
+
+    @media (max-width: 520px){
+      h1{ font-size: 36px; }
+      #envelope{ height: 280px; }
+      .letter{ height: 260px; }
+      .toLine{ font-size: 34px; }
+
+      /* keep triangle proportions on small screens */
+      .flap{
+        height: 135px;
+        width: calc(min(430px, 92vw));
+      }
+      .front:before{ border-left:185px solid var(--pinkL); border-top:125px solid transparent; }
+      .front:after{ border-right:185px solid var(--pinkR); border-top:125px solid transparent; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="panel">
+    <h1>A Valentine for You</h1>
+
+    <div class="wrap">
+      <div id="envelope" class="close" aria-label="Envelope">
+        <div class="back"></div>
+
+        <div class="letter" aria-label="Letter">
+          <div class="inner">
+            <button class="fav" id="favBtn" title="Love">♥</button>
+
+            <div class="content" id="letterContent">
+              <div class="topline" id="lineTop">You are the Judy to my Nick</div>
+              <div class="toLine" id="lineTo">To: Jenica</div>
+              <div class="rule"></div>
+
+              <div class="message" id="messageBox">
+                <b>Happy Valentine’s Day</b> 💜<br />
+                <span class="typing">Thank you for being my calm in the chaos, my laughter after long days, and my favourite person to meet.</span>
+                <br /><br />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="front" aria-hidden="true">
+          <div class="bottom"></div>
+        </div>
+
+        <div class="flap" aria-hidden="true"></div>
+      </div>
+    </div>
+
+    <div class="controls">
+      <button class="btn primary" id="openBtn">Open</button>
+      <button class="btn" id="closeBtn">Close</button>
+    </div>
+
+    <div class="musicRow">
+      <button class="btn" id="musicBtn">Music: Off</button>
+    </div>
+
+    <div class="tip">Click on the purple heart</div>
+  </div>
+
+  <script>
+    const envelope = document.getElementById("envelope");
+    const openBtn = document.getElementById("openBtn");
+    const closeBtn = document.getElementById("closeBtn");
+    const musicBtn = document.getElementById("musicBtn");
+    const favBtn = document.getElementById("favBtn");
+
+    let musicOn = false;
+    let typeInterval = null;
+
+    function openEnvelope(){
+      if(envelope.classList.contains("open")) return;
+      envelope.classList.add("open");
+      envelope.classList.remove("close");
+    }
+
+    function closeEnvelope(){
+      envelope.classList.add("close");
+      envelope.classList.remove("open");
+      envelope.classList.remove("bounce");
+      // Clear typewriter if running
+      if(typeInterval) {
+        clearInterval(typeInterval);
+        typeInterval = null;
+      }
+      // Reset text
+      document.querySelector(".typing").textContent = "";
+    }
+
+    function openEnvelopeWithType(){
+      if(envelope.classList.contains("open")) return;
+      openEnvelope();
+      setTimeout(typeWriter, 400);
+      
+      // Create 27 big light purple opening hearts all over the page
+      for(let i = 0; i < 27; i++) {
+        setTimeout(() => {
+          const heart = document.createElement("div");
+          heart.className = "opening-heart";
+          heart.textContent = "💜";
+          
+          const randomX = Math.random() * window.innerWidth;
+          const randomY = Math.random() * window.innerHeight;
+          heart.style.left = randomX + "px";
+          heart.style.top = randomY + "px";
+          
+          const tx = (Math.random() - 0.5) * 60;
+          heart.style.setProperty("--tx", tx + "px");
+          
+          document.body.appendChild(heart);
+          
+          setTimeout(() => heart.remove(), 3000);
+        }, i * 50);
+      }
+    }
+
+    openBtn.addEventListener("click", openEnvelopeWithType);
+    closeBtn.addEventListener("click", closeEnvelope);
+
+    musicBtn.addEventListener("click", () => {
+      musicOn = !musicOn;
+      musicBtn.textContent = musicOn ? "Music: On" : "Music: Off";
+    });
+
+    favBtn.addEventListener("click", () => {
+      favBtn.style.transform = "scale(0.94)";
+      setTimeout(() => (favBtn.style.transform = "scale(1)"), 120);
+      
+      // Create floating hearts
+      for(let i = 0; i < 5; i++) {
+        const heart = document.createElement("div");
+        heart.className = "floating-heart";
+        heart.textContent = "💜";
+        
+        const rect = favBtn.getBoundingClientRect();
+        heart.style.left = (rect.left + rect.width / 2) + "px";
+        heart.style.top = (rect.top + rect.height / 2) + "px";
+        
+        const tx = (Math.random() - 0.5) * 80;
+        heart.style.setProperty("--tx", tx + "px");
+        
+        document.body.appendChild(heart);
+        
+        setTimeout(() => heart.remove(), 2000);
+      }
+    });
+
+    // Typewriter effect
+    function typeWriter() {
+      const typingElement = document.querySelector(".typing");
+      const text = "Thank you for being my calm in the chaos, my laughter after long days, and my favourite person to meet.";
+      let index = 0;
+      typingElement.textContent = "";
+      
+      if(typeInterval) {
+        clearInterval(typeInterval);
+      }
+      
+      typeInterval = setInterval(() => {
+        if (index < text.length) {
+          typingElement.textContent += text.charAt(index);
+          index++;
+        } else {
+          clearInterval(typeInterval);
+          typeInterval = null;
+        }
+      }, 30);
+    }
+
+    // Start typewriter when envelope opens
+    closeEnvelope();
+  </script>
+</body>
+</html>
