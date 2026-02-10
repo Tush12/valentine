@@ -29,7 +29,28 @@
       --btnFill: rgba(176, 141, 215, 0.18);
     }
 
-    *{ box-sizing:border-box; }
+    /* ===== Remove mobile blue highlight + click effects ===== */
+    *{
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+    button, a, input, textarea, select{
+      -webkit-appearance: none;
+      appearance: none;
+      outline: none;
+      box-shadow: none;
+    }
+    button:focus,
+    button:focus-visible,
+    a:focus,
+    a:focus-visible{
+      outline: none !important;
+      box-shadow: none !important;
+    }
+    button, .btn, .fav{
+      -webkit-user-select: none;
+      user-select: none;
+    }
 
     html{ margin: 0; }
 
@@ -143,7 +164,7 @@
       text-align:center;
       font-size: 18px;
       color: rgba(80,80,80,0.75);
-      padding-right: 5px; /* fixed: removed space in "5 px" */
+      padding-right: 5px;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -173,9 +194,7 @@
       line-height: 1.45;
     }
 
-    .typing{
-      display: inline-block;
-    }
+    .typing{ display: inline-block; }
 
     .fav{
       position:absolute;
@@ -191,7 +210,6 @@
       display:grid;
       place-items:center;
       cursor:pointer;
-      user-select:none;
       font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
       font-weight: 700;
       z-index: 3;
@@ -235,6 +253,7 @@
       clip-path: polygon(0 0, 50% 76%, 100% 0, 100% 100%, 0 100%);
     }
 
+    /* FLAP */
     .flap{
       position:absolute;
       left:50%;
@@ -242,19 +261,15 @@
       height: 205px;
       width: 100%;
       margin-left: -50%;
-
       background: linear-gradient(to bottom, var(--redTop) 0%, var(--redTopDark) 100%);
       clip-path: polygon(5% 0%, 95% 0%, 50% 85%, 5% 0%);
       border-radius: 18px 18px 0 0;
-
       transform-origin: top center;
       transform: rotateX(0deg);
       transition: transform 700ms cubic-bezier(.16, 1, .3, 1);
-
       z-index: 6;
       pointer-events:none;
       backface-visibility:hidden;
-
       box-shadow:
         inset 0 -6px 10px rgba(255,255,255,0.15),
         0 10px 14px rgba(0,0,0,0.18);
@@ -271,29 +286,12 @@
     }
 
     /* ===== OPENING ===== */
-    #envelope.open .flap{
-      transform: rotateX(180deg);
-    }
-
-    #envelope.open .letter{
-      transform: translateX(-50%) translateY(-160px) scale(1);
-    }
-
+    #envelope.open .flap{ transform: rotateX(180deg); }
+    #envelope.open .letter{ transform: translateX(-50%) translateY(-160px) scale(1); }
     #envelope.open .content{
       opacity: 1;
       transform: translateY(0);
       transition-delay: 360ms;
-    }
-
-    /* optional bounce */
-    #envelope.open.bounce .letter{
-      animation: letterBounce 720ms cubic-bezier(.16, 1, .3, 1) 1;
-    }
-    @keyframes letterBounce{
-      0%   { transform: translateX(-50%) translateY(0) scale(0.995); }
-      70%  { transform: translateX(-50%) translateY(-164px) scale(1); }
-      85%  { transform: translateX(-50%) translateY(-154px) scale(1); }
-      100% { transform: translateX(-50%) translateY(-160px) scale(1); }
     }
 
     /* buttons */
@@ -373,10 +371,8 @@
       .letter .inner{ padding: 12px 12px 14px; }
       .toLine{ font-size: 28px; }
       .message{ font-size: 18px; line-height: 1.35; }
-
       .btn{ padding: 12px 24px; font-size: 15px; }
       .controls{ gap: 10px; }
-
       .flap{ height: 135px; width: 100%; }
       .front:before{ border-left:165px solid var(--pinkL); border-top:115px solid transparent; }
       .front:after{ border-right:165px solid var(--pinkR); border-top:115px solid transparent; }
@@ -398,7 +394,7 @@
 
         <div class="letter" aria-label="Letter">
           <div class="inner">
-            <button class="fav" id="favBtn" title="Love">♥</button>
+            <button class="fav" id="favBtn" title="Love" type="button">♥</button>
 
             <div class="content" id="letterContent">
               <div class="topline" id="lineTop">You are the Judy to my Nick</div>
@@ -423,12 +419,12 @@
     </div>
 
     <div class="controls">
-      <button class="btn primary" id="openBtn">Open</button>
-      <button class="btn" id="closeBtn">Close</button>
+      <button class="btn primary" id="openBtn" type="button">Open</button>
+      <button class="btn" id="closeBtn" type="button">Close</button>
     </div>
 
     <div class="musicRow">
-      <button class="btn" id="musicBtn">Music: Off</button>
+      <button class="btn" id="musicBtn" type="button">Music: Off</button>
     </div>
 
     <div class="tip">Click on the purple heart</div>
@@ -448,7 +444,7 @@
     let typeInterval = null;
 
     function openEnvelope(){
-      if (envelope.classList.contains("open")) return;
+      if(envelope.classList.contains("open")) return;
       envelope.classList.add("open");
       envelope.classList.remove("close");
     }
@@ -456,48 +452,37 @@
     function closeEnvelope(){
       envelope.classList.add("close");
       envelope.classList.remove("open");
-      envelope.classList.remove("bounce");
 
-      // Clear typewriter if running
-      if (typeInterval) {
+      if(typeInterval) {
         clearInterval(typeInterval);
         typeInterval = null;
       }
-
-      // Reset text (optional: keep typed text if you prefer)
       document.querySelector(".typing").textContent = "";
-
-      // IMPORTANT FIX:
-      // Do NOT stop or reset music here.
-      // Music should continue playing unless user turns it off with Music button.
+      // Music does NOT stop on close (as you requested)
     }
 
     function openEnvelopeWithType(){
-      if (envelope.classList.contains("open")) return;
+      if(envelope.classList.contains("open")) return;
       openEnvelope();
       setTimeout(typeWriter, 400);
 
-      // Play music only on first open unless user already controlled it
       if (!userToggledMusic && !firstOpenPlayed) {
-        bgMusic.play().catch(err => console.log("Music play failed:", err));
+        bgMusic.play().catch(() => {});
         musicOn = true;
         musicBtn.textContent = "Music: On";
         firstOpenPlayed = true;
       } else if (userToggledMusic && musicOn) {
-        bgMusic.play().catch(err => console.log("Music play failed:", err));
+        bgMusic.play().catch(() => {});
       }
 
-      // Opening hearts
-      for (let i = 0; i < 27; i++) {
+      for(let i = 0; i < 27; i++) {
         setTimeout(() => {
           const heart = document.createElement("div");
           heart.className = "opening-heart";
           heart.textContent = "💜";
 
-          const randomX = Math.random() * window.innerWidth;
-          const randomY = Math.random() * window.innerHeight;
-          heart.style.left = randomX + "px";
-          heart.style.top = randomY + "px";
+          heart.style.left = (Math.random() * window.innerWidth) + "px";
+          heart.style.top  = (Math.random() * window.innerHeight) + "px";
 
           const tx = (Math.random() - 0.5) * 60;
           heart.style.setProperty("--tx", tx + "px");
@@ -516,12 +501,11 @@
       musicOn = !musicOn;
 
       if (musicOn) {
-        bgMusic.play().catch(err => console.log("Music play failed:", err));
+        bgMusic.play().catch(() => {});
       } else {
         bgMusic.pause();
         bgMusic.currentTime = 0;
       }
-
       musicBtn.textContent = musicOn ? "Music: On" : "Music: Off";
     });
 
@@ -529,14 +513,14 @@
       favBtn.style.transform = "scale(0.94)";
       setTimeout(() => (favBtn.style.transform = "scale(1)"), 120);
 
-      for (let i = 0; i < 5; i++) {
+      for(let i = 0; i < 5; i++) {
         const heart = document.createElement("div");
         heart.className = "floating-heart";
         heart.textContent = "💜";
 
         const rect = favBtn.getBoundingClientRect();
         heart.style.left = (rect.left + rect.width / 2) + "px";
-        heart.style.top = (rect.top + rect.height / 2) + "px";
+        heart.style.top  = (rect.top + rect.height / 2) + "px";
 
         const tx = (Math.random() - 0.5) * 80;
         heart.style.setProperty("--tx", tx + "px");
@@ -546,13 +530,13 @@
       }
     });
 
-    function typeWriter(){
+    function typeWriter() {
       const typingElement = document.querySelector(".typing");
       const text = "Thank you for being my calm in the chaos, my laughter after long days, and my favourite person to meet.";
       let index = 0;
       typingElement.textContent = "";
 
-      if (typeInterval) clearInterval(typeInterval);
+      if(typeInterval) clearInterval(typeInterval);
 
       typeInterval = setInterval(() => {
         if (index < text.length) {
