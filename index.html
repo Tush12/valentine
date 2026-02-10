@@ -412,7 +412,7 @@
 <body>
   <div class="panel">
     <audio id="bgMusic" loop>
-      <source src="Man_Chala.mp3" type="audio/mp3">
+      <source src="Man_Chala_48KBPS.mp4" type="audio/mp4">
     </audio>
     <h1>A Valentine for You</h1>
 
@@ -466,6 +466,8 @@
     const favBtn = document.getElementById("favBtn");
 
     let musicOn = false;
+    let userToggledMusic = false; // true if user explicitly used the Music button
+    let firstOpenPlayed = false;  // ensures autoplay runs only once automatically
     let typeInterval = null;
 
     function openEnvelope(){
@@ -485,7 +487,7 @@
       }
       // Reset text
       document.querySelector(".typing").textContent = "";
-      // Stop music
+      // Stop music on close
       const bgMusic = document.getElementById("bgMusic");
       bgMusic.pause();
       bgMusic.currentTime = 0;
@@ -498,11 +500,17 @@
       openEnvelope();
       setTimeout(typeWriter, 400);
       
-      // Play music on first open
+      // Play music only if user hasn't explicitly toggled music and we haven't auto-played yet
       const bgMusic = document.getElementById("bgMusic");
-      bgMusic.play().catch(err => console.log("Music play failed:", err));
-      musicOn = true;
-      musicBtn.textContent = "Music: On";
+      if (!userToggledMusic && !firstOpenPlayed) {
+        bgMusic.play().catch(err => console.log("Music play failed:", err));
+        musicOn = true;
+        musicBtn.textContent = "Music: On";
+        firstOpenPlayed = true;
+      } else if (userToggledMusic && musicOn) {
+        // user previously toggled music on
+        bgMusic.play().catch(err => console.log("Music play failed:", err));
+      }
       
       // Create 27 big light purple opening hearts all over the page
       for(let i = 0; i < 27; i++) {
@@ -530,7 +538,15 @@
     closeBtn.addEventListener("click", closeEnvelope);
 
     musicBtn.addEventListener("click", () => {
+      const bgMusic = document.getElementById("bgMusic");
+      userToggledMusic = true;
       musicOn = !musicOn;
+      if (musicOn) {
+        bgMusic.play().catch(err => console.log("Music play failed:", err));
+      } else {
+        bgMusic.pause();
+        bgMusic.currentTime = 0;
+      }
       musicBtn.textContent = musicOn ? "Music: On" : "Music: Off";
     });
 
