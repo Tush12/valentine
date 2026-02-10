@@ -31,6 +31,8 @@
 
     *{ box-sizing:border-box; }
 
+    html{ margin: 0; }
+
     body{
       margin:0;
       width: 100%;
@@ -39,6 +41,7 @@
       place-items:center;
       padding:22px;
       font-family:"Dancing Script", cursive;
+      overflow-x: hidden;
       background:
         radial-gradient(900px 520px at 20% 20%, rgba(255,255,255,0.75), transparent 60%),
         radial-gradient(900px 520px at 80% 25%, rgba(255,255,255,0.55), transparent 60%),
@@ -379,7 +382,7 @@
 
     @media (max-width: 520px){
       h1{ font-size: 36px; }
-      #envelope{ height: 280px; }
+      #envelope{ height: 280px; width: min(380px, 85vw); }
       .letter{ height: 240px; }
       .letter .inner{ padding: 12px 12px 14px; }
       .toLine{ font-size: 28px; }
@@ -397,10 +400,10 @@
       /* keep triangle proportions on small screens */
       .flap{
         height: 135px;
-        width: calc(min(430px, 92vw));
+        width: 100%;
       }
-      .front:before{ border-left:185px solid var(--pinkL); border-top:125px solid transparent; }
-      .front:after{ border-right:185px solid var(--pinkR); border-top:125px solid transparent; }
+      .front:before{ border-left:165px solid var(--pinkL); border-top:115px solid transparent; }
+      .front:after{ border-right:165px solid var(--pinkR); border-top:115px solid transparent; }
     }
   </style>
 </head>
