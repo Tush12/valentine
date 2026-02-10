@@ -5,6 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Valentine Letter</title>
 
+  <!-- Google Analytics GA4 -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-9WPYBB98LT"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){ dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'G-9WPYBB98LT', { send_page_view: true });
+  </script>
+
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;600;700&display=swap" rel="stylesheet" />
@@ -443,6 +452,13 @@
     let firstOpenPlayed = false;
     let typeInterval = null;
 
+    // GA event helper
+    function trackEvent(eventName, params = {}) {
+      if (typeof gtag === "function") {
+        gtag("event", eventName, params);
+      }
+    }
+
     function openEnvelope(){
       if(envelope.classList.contains("open")) return;
       envelope.classList.add("open");
@@ -458,11 +474,13 @@
         typeInterval = null;
       }
       document.querySelector(".typing").textContent = "";
-      // Music does NOT stop on close (as you requested)
+      // Music does NOT stop on close
     }
 
     function openEnvelopeWithType(){
       if(envelope.classList.contains("open")) return;
+
+      trackEvent("open_click");
       openEnvelope();
       setTimeout(typeWriter, 400);
 
@@ -494,11 +512,17 @@
     }
 
     openBtn.addEventListener("click", openEnvelopeWithType);
-    closeBtn.addEventListener("click", closeEnvelope);
+
+    closeBtn.addEventListener("click", () => {
+      trackEvent("close_click");
+      closeEnvelope();
+    });
 
     musicBtn.addEventListener("click", () => {
       userToggledMusic = true;
       musicOn = !musicOn;
+
+      trackEvent("music_toggle", { state: musicOn ? "on" : "off" });
 
       if (musicOn) {
         bgMusic.play().catch(() => {});
@@ -510,6 +534,8 @@
     });
 
     favBtn.addEventListener("click", () => {
+      trackEvent("heart_click");
+
       favBtn.style.transform = "scale(0.94)";
       setTimeout(() => (favBtn.style.transform = "scale(1)"), 120);
 
