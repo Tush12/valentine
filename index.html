@@ -181,7 +181,7 @@
 
     .toLine{
       text-align:center;
-      font-size: 38px;
+      font-size: 1.5rem;
       font-weight: 700;
       color:#222;
       margin-top: 6px;
@@ -195,12 +195,27 @@
       margin: 12px auto 10px;
     }
 
+    .valentine-title {
+      text-align: center;
+      font-size: 1.6rem;
+      font-weight: bold;
+      margin-top: 0;
+      margin-bottom: 8px;
+      font-family: "Dancing Script", cursive;
+      color: #7c3aed;
+    }
+
     .message{
       padding: 6px 10px 2px;
       text-align:center;
       color: rgba(35,35,35,0.85);
       font-size: 22px;
       line-height: 1.45;
+    }
+
+    .message b {
+      font-size: 1.1rem;
+      font-weight: 600;
     }
 
     .typing{ display: inline-block; }
@@ -409,10 +424,10 @@
               <div class="topline" id="lineTop">You are the Judy to my Nick</div>
               <div class="toLine" id="lineTo">To: Jenica</div>
               <div class="rule"></div>
+              <div class="valentine-title">Happy Valentine’s Day 💜</div>
 
               <div class="message" id="messageBox">
-                <b>Happy Valentine’s Day</b> 💜<br />
-                <span class="typing">Thank you for being my calm in the chaos, my reason to smile, and my favourite person to meet. We met all of a sudden, guess the universe knew what it was doing.</span>
+                <span class="typing">Thank you for being my calm in the chaos, my reason to smile, and my favourite person. We met so suddenly, the universe just knew.</span>
                 <br /><br />
               </div>
             </div>
@@ -558,7 +573,7 @@
 
     function typeWriter() {
       const typingElement = document.querySelector(".typing");
-      const text = "Thank you for being my calm in the chaos, my reason to smile, and my favourite person to meet. We met all of a sudden, guess the universe knew what it was doing.";
+      const text = "Thank you for being my calm in the chaos, my reason to smile, and my favourite person. We met so suddenly, the universe just knew.";
       let index = 0;
       typingElement.textContent = "";
 
