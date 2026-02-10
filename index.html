@@ -411,6 +411,9 @@
 
 <body>
   <div class="panel">
+    <audio id="bgMusic" loop>
+      <source src="Man_Chala_48KBPS.mp4" type="audio/mp4">
+    </audio>
     <h1>A Valentine for You</h1>
 
     <div class="wrap">
@@ -482,12 +485,24 @@
       }
       // Reset text
       document.querySelector(".typing").textContent = "";
+      // Stop music
+      const bgMusic = document.getElementById("bgMusic");
+      bgMusic.pause();
+      bgMusic.currentTime = 0;
+      musicOn = false;
+      musicBtn.textContent = "Music: Off";
     }
 
     function openEnvelopeWithType(){
       if(envelope.classList.contains("open")) return;
       openEnvelope();
       setTimeout(typeWriter, 400);
+      
+      // Play music on first open
+      const bgMusic = document.getElementById("bgMusic");
+      bgMusic.play().catch(err => console.log("Music play failed:", err));
+      musicOn = true;
+      musicBtn.textContent = "Music: On";
       
       // Create 27 big light purple opening hearts all over the page
       for(let i = 0; i < 27; i++) {
